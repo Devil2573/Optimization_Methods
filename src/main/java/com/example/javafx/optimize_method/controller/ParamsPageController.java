@@ -2,6 +2,7 @@ package com.example.javafx.optimize_method.controller;
 
 import com.example.javafx.optimize_method.model.Fractional;
 import com.example.javafx.optimize_method.model.SharedData;
+import com.example.javafx.optimize_method.utils.Gaus;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -10,8 +11,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ParamsPageController {
@@ -173,7 +179,7 @@ public class ParamsPageController {
             sharedData.setNotBasis(notBasis);
             sharedData.setCoefOfTargetFunction(coefOfTargetFunction);
             SimplexMethodPageController simplexMethodPageController = mainPageController.getSimplexPageController();
-            simplexMethodPageController.setSharedData(sharedData);
+            simplexMethodPageController.firstSetData(sharedData);
 
 
         } catch (Exception e) {
@@ -361,5 +367,137 @@ public class ParamsPageController {
             }
         }
         return basis;
+    }
+
+
+    @FXML
+    private void openFilePicker() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Выберите файл");
+        File selectedFile = fileChooser.showOpenDialog(vbox.getScene().getWindow());
+        if (selectedFile != null) {
+            try {
+                HashMap<String, Object> fileData = Gaus.readFile(selectedFile.getAbsolutePath());
+                if (fileData != null) {
+                    updateUI(fileData);
+                } else {
+                    showError("Ошибка чтения файла: некорректный формат файла");
+                }
+            } catch (Exception e) {
+                showError("Ошибка чтения файла");
+            }
+        }
+    }
+
+    private void updateUI(HashMap<String, Object> fileData) {
+
+        int variables = (int) fileData.get("matrixColumns") - 1;
+        int limitations = (int) fileData.get("matrixRows");
+        String[] baseXtemp = (String[]) fileData.get("baseXtemp");
+        String[] targetCoefsTemp = (String[]) fileData.get("targetCoefs");
+        Fractional[][] matrixOfCoef = (Fractional[][]) fileData.get("matrixOfCoef");
+        Integer[] basis = new Integer[baseXtemp.length];
+        Integer[] targetCoefs = new Integer[targetCoefsTemp.length];
+        for (int i = 0; i < baseXtemp.length; i++) {
+            basis[i] = Integer.parseInt(baseXtemp[i]);
+        }
+        for (int i = 0; i < targetCoefsTemp.length; i++) {
+            targetCoefs[i] = Integer.parseInt(targetCoefsTemp[i]);
+        }
+        System.out.println(Arrays.toString(targetCoefs));
+        fieldVariables.setText(String.valueOf(variables));
+        fieldLimitations.setText(String.valueOf(limitations));
+        updatePanesWithData(matrixOfCoef, targetCoefs);
+        updateCheckBoxesWithData(basis);
+    }
+
+    private void updatePanesWithData(Fractional[][] matrixOfCoef, Integer[] targetCoefs) {
+
+        int numVariables = Integer.parseInt(fieldVariables.getText());
+        int numLimitations = Integer.parseInt(fieldLimitations.getText());
+        if ((numVariables >= 2 && numVariables <= 16) && (numLimitations >= 1 && numLimitations <= 15)) {
+            vbox.getChildren().clear();
+            targetFunction.getChildren().clear();
+            for (int i = 0; i < numLimitations; i++) {
+                HBox newHBox = createNewHBoxWithData(matrixOfCoef[i]);
+                vbox.getChildren().add(newHBox);
+            }
+            HBox newTargetFunction = createTargetFunctionWithData(targetCoefs);
+            targetFunction.getChildren().add(newTargetFunction);
+        }
+    }
+
+    private HBox createNewHBoxWithData(Fractional[] coefs) {
+        HBox hbox = new HBox();
+        int numVariables = Integer.parseInt(fieldVariables.getText());
+        double fieldWidth = 1080.0 / (numVariables * 2 + 2) + 5;
+
+        for (int i = 1; i <= numVariables; i++) {
+            TextField variableField = new TextField();
+            variableField.setTextFormatter(new TextFormatter<>(change ->
+                    (change.getControlNewText().matches("-?\\d*")) ? change : null));
+            variableField.setPrefWidth(fieldWidth);
+            variableField.setEditable(true);
+            variableField.setText(String.valueOf(coefs[i - 1]));
+            TextField variableLabel = new TextField("x" + i);
+            variableLabel.setEditable(false);
+            variableLabel.setPrefWidth(fieldWidth);
+            hbox.getChildren().addAll(variableField, variableLabel);
+        }
+
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.setItems(FXCollections.observableArrayList("=", "<=", ">="));
+        comboBox.setPrefWidth(fieldWidth + 30);
+        comboBox.getSelectionModel().selectFirst();
+        TextField resultField = new TextField();
+        resultField.setPrefWidth(fieldWidth);
+        resultField.setText(String.valueOf(coefs[coefs.length - 1]));
+        hbox.getChildren().addAll(comboBox, resultField);
+
+        return hbox;
+    }
+
+    private void updateCheckBoxesWithData(Integer[] basis) {
+        checkboxContainer.getChildren().clear();
+        int numVariables = Integer.parseInt(fieldVariables.getText());
+        ArrayList<Integer> tempBasis = new ArrayList<>(List.of(basis));
+        for (int i = 1; i <= numVariables; i++) {
+            Text variableText = new Text("x" + i);
+            CheckBox checkBox = new CheckBox();
+            if (tempBasis.contains(i)){
+                checkBox.setSelected(true);
+            }
+            HBox variableBox = new HBox(variableText, checkBox);
+            checkboxContainer.getChildren().add(variableBox);
+        }
+    }
+
+    private HBox createTargetFunctionWithData(Integer[] coefs) {
+        HBox hbox = new HBox();
+        int numVariables = Integer.parseInt(fieldVariables.getText()) ;
+        double fieldWidth = 1080.0 / (numVariables * 2 + 2) + 5;
+
+        for (int i = 1; i <= numVariables; i++) {
+            TextField variableField = new TextField();
+            variableField.setTextFormatter(new TextFormatter<>(change ->
+                    (change.getControlNewText().matches("-?\\d*")) ? change : null));
+            variableField.setPrefWidth(fieldWidth);
+            variableField.setEditable(true);
+            variableField.setText(String.valueOf(coefs[i - 1]));
+            TextField variableLabel = new TextField("x" + i);
+            variableLabel.setEditable(false);
+            variableLabel.setPrefWidth(fieldWidth);
+            hbox.getChildren().addAll(variableField, variableLabel);
+        }
+
+        ComboBox<String> comboBox = new ComboBox<>();
+        comboBox.setItems(FXCollections.observableArrayList("min", "max"));
+        comboBox.setPrefWidth(fieldWidth + 30);
+        comboBox.getSelectionModel().selectFirst();
+
+
+        hbox.getChildren().addAll(comboBox);
+
+        return hbox;
     }
 }

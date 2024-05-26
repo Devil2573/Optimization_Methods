@@ -297,7 +297,7 @@ public class Gaus {
         }
     }
 
-    static HashMap<String, Object> readFile(String fileName) throws FileNotFoundException {
+    public static HashMap<String, Object> readFile(String fileName) throws FileNotFoundException {
 
         HashMap<String, Object> hashMap = new HashMap<>();
 
@@ -318,11 +318,13 @@ public class Gaus {
             }
 
             String[] baseXtemp = br.readLine().split(" ");
+            String[] targetCoefs = br.readLine().split(" ");
 
             hashMap.put("baseXtemp", baseXtemp);
             hashMap.put("matrixOfCoef", matrixOfCoef);
             hashMap.put("matrixColumns", matrixColumns);
             hashMap.put("matrixRows", matrixRows);
+            hashMap.put("targetCoefs", targetCoefs);
 
             return hashMap;
 

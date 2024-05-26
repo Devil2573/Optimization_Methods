@@ -190,4 +190,19 @@ public class Fractional {
         return false;
     }
 
+
+    public static Fractional[][] deepCopyMatrix(Fractional[][] original) {
+        if (original == null) {
+            return null;
+        }
+
+        final Fractional[][] result = new Fractional[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            result[i] = new Fractional[original[i].length];
+            for (int j = 0; j < original[i].length; j++) {
+                result[i][j] = new Fractional(original[i][j].getNumerator(), original[i][j].getDenominator());
+            }
+        }
+        return result;
+    }
 }

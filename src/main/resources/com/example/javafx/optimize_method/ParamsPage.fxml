@@ -37,7 +37,10 @@
                 <HBox fx:id="checkboxContainer" spacing="5.0"/>
                 <VBox fx:id="vbox"/>
                 <Button mnemonicParsing="false" onAction="#GetData" prefHeight="25.0" prefWidth="100.0" text="Начать"/>
+                <Button mnemonicParsing="false" onAction="#openFilePicker" prefHeight="25.0" prefWidth="100.0" text="Выбрать файл"/>
             </children>
+
         </VBox>
+
     </children>
 </AnchorPane>
