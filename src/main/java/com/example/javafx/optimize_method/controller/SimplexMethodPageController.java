@@ -18,7 +18,6 @@ import java.util.Objects;
 public class SimplexMethodPageController {
 
 
-
     private SharedData sharedData;
     private Boolean auto;
     private ArrayList<SharedData> allData = new ArrayList<>();
@@ -35,17 +34,20 @@ public class SimplexMethodPageController {
     private Button back;
     @FXML
     private Button forward;
+
     public void setSharedData(SharedData sharedData) {
         this.sharedData = sharedData;
         allData.add(sharedData);
         System.out.println("setSharedData called");
         updateTableView();
     }
-    public void firstSetData(SharedData sharedData){
+
+    public void firstSetData(SharedData sharedData) {
         Fractional[][] matrixOfCoef = sharedData.getMatrixOfCoef();
         Fractional[] targetCoefs = sharedData.getCoefOfTargetFunction();
         ArrayList<Integer> basis = sharedData.getBasis();
         ArrayList<Integer> notBasis = sharedData.getNotBasis();
+        SharedData newData = new SharedData();
 //        System.out.println("datatatatatatatat");
         allData.clear();
 //        System.out.println(allData);
@@ -81,10 +83,13 @@ public class SimplexMethodPageController {
             newCoefOfFunction[newCoefOfFunction.length - 1] = newCoef;
             row += 1;
         }
-        sharedData.setCoefOfTargetFunction(newCoefOfFunction);
-        sharedData.setMatrixOfCoef(matrixOfCoef);
 
-        setSharedData(sharedData);
+        newData.setCoefOfTargetFunction(newCoefOfFunction);
+        newData.setMatrixOfCoef(matrixOfCoef);
+        newData.setBasis(basis);
+        newData.setNotBasis(notBasis);
+
+        setSharedData(newData);
     }
 
     @FXML
@@ -157,7 +162,7 @@ public class SimplexMethodPageController {
 //        System.out.println(Arrays.toString(targetCoefs));
         enableMinButton(matrixOfCoef, basis, notBasis);
 
-        if (edgeToInfinity()){
+        if (edgeToInfinity()) {
             for (Node node : simplexGridPane.getChildren()) {
                 if (node instanceof Button) {
                     ((Button) node).setDisable(true);
@@ -166,7 +171,7 @@ public class SimplexMethodPageController {
             forward.setDisable(true);
             back.setDisable(false);
             messageLabel.setText("Нет решения");
-        }else if (isSolution()){
+        } else if (isSolution()) {
             StringBuilder solution = createAnswer();
             forward.setDisable(true);
             messageLabel.setText(solution.toString());
@@ -174,19 +179,19 @@ public class SimplexMethodPageController {
 
     }
 
-    public StringBuilder createAnswer(){
+    public StringBuilder createAnswer() {
         Fractional[][] matrixOfCoef = sharedData.getMatrixOfCoef();
         Fractional[] targetCoefs = sharedData.getCoefOfTargetFunction();
         ArrayList<Integer> basis = sharedData.getBasis();
         ArrayList<Integer> notBasis = sharedData.getNotBasis();
         ArrayList<Fractional> answer = new ArrayList<>();
         int dlina = basis.size() + notBasis.size();
-        for (int i = 0; i < dlina; i++){
+        for (int i = 0; i < dlina; i++) {
             answer.add(Fractional.createFractional("0"));
         }
 //        System.out.println("answer");
 //        System.out.println(answer);
-        for (int row = 0; row < matrixOfCoef.length; row++){
+        for (int row = 0; row < matrixOfCoef.length; row++) {
             Fractional coef = matrixOfCoef[row][matrixOfCoef[0].length - 1];
             int index = basis.get(row);
             answer.set(index - 1, coef);
@@ -203,10 +208,10 @@ public class SimplexMethodPageController {
         StringBuilder solution = new StringBuilder();
         solution.append("(");
         int count = 0;
-        for (Fractional coef : answer){
-            count ++;
+        for (Fractional coef : answer) {
+            count++;
             solution.append(coef);
-            if (count != answer.size()){
+            if (count != answer.size()) {
                 solution.append(",");
             }
         }
@@ -217,7 +222,7 @@ public class SimplexMethodPageController {
         return solution;
     }
 
-    public void stepForward(){
+    public void stepForward() {
         if (highlightedButton != null) {
             Fractional[][] matrixOfCoef = sharedData.getMatrixOfCoef();
             Fractional[] targetCoefs = sharedData.getCoefOfTargetFunction();
@@ -225,7 +230,7 @@ public class SimplexMethodPageController {
             ArrayList<Integer> notBasis = sharedData.getNotBasis();
             stepForwardcalculations(matrixOfCoef, basis, notBasis, targetCoefs);
             back.setDisable(false);
-        }else {
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Ошибка");
             alert.setHeaderText(null);
@@ -235,8 +240,7 @@ public class SimplexMethodPageController {
     }
 
 
-
-    public void stepForwardcalculations(Fractional[][] oldMatrix, ArrayList<Integer> oldBasis, ArrayList<Integer> oldNotBasis, Fractional[] oldTarget){
+    public void stepForwardcalculations(Fractional[][] oldMatrix, ArrayList<Integer> oldBasis, ArrayList<Integer> oldNotBasis, Fractional[] oldTarget) {
         Fractional[][] newMatrix = Fractional.deepCopyMatrix(oldMatrix);
 
         Button button = highlightedButton;
@@ -254,11 +258,11 @@ public class SimplexMethodPageController {
 //        System.out.println(Arrays.toString(oldTarget));
 //        System.out.println(oldBasis);
 //        System.out.println(oldNotBasis);
-        for (Fractional[] row : oldMatrix){
+        for (Fractional[] row : oldMatrix) {
 //            System.out.println(Arrays.toString(row));
         }
         //Меняем столбцы местами
-        for (int row = 0; row < oldMatrix.length; row++){
+        for (int row = 0; row < oldMatrix.length; row++) {
             Fractional temp = newMatrix[row][xRow - 1];
             newMatrix[row][xRow - 1] = oldMatrix[row][xCol - 1];
             newMatrix[row][xCol - 1] = temp;
@@ -283,7 +287,7 @@ public class SimplexMethodPageController {
 //        System.out.println(Arrays.toString(newTarget));
 //        System.out.println(newBasis);
 //        System.out.println(newNotBasis);
-        for (Fractional[] row : newMatrix){
+        for (Fractional[] row : newMatrix) {
 //            System.out.println(Arrays.toString(row));
         }
 
@@ -291,14 +295,14 @@ public class SimplexMethodPageController {
 
         Fractional alpha_1 = Fractional.division(Fractional.createFractional("1"), choosenCoef);
 //        System.out.println("alpha");
-        for (int row = 0; row < newMatrix.length; row++){
-            if(row != indexRowButton - 1){
+        for (int row = 0; row < newMatrix.length; row++) {
+            if (row != indexRowButton - 1) {
                 temp = Fractional.multiplication(newMatrix[row][xRow - 1], alpha_1);
                 temp = Fractional.multiplication(temp, Fractional.createFractional("-1"));
 
                 newMatrix[row][xRow - 1] = temp;
 
-            }else {
+            } else {
                 newMatrix[row][xRow - 1] = alpha_1;
             }
         }
@@ -307,14 +311,14 @@ public class SimplexMethodPageController {
         //Целевая функция
 //        System.out.println("change stolb");
 //        System.out.println(Arrays.toString(newTarget));
-        for (Fractional[] row : newMatrix){
+        for (Fractional[] row : newMatrix) {
             System.out.println(Arrays.toString(row));
         }
 
 
         //Меняем значения в строке выбранного значения
-        for (Integer col : newNotBasis){
-            if (col != xRow){
+        for (Integer col : newNotBasis) {
+            if (col != xRow) {
                 newMatrix[indexRowButton - 1][col - 1] = Fractional.multiplication(newMatrix[indexRowButton - 1][col - 1], alpha_1);
             }
         }
@@ -329,14 +333,14 @@ public class SimplexMethodPageController {
 
 
         //Считаем вектора
-        for (Integer col : newNotBasis){
+        for (Integer col : newNotBasis) {
 //            System.out.println("col: " + col);
-            if (col != xRow ){
-                int cal = xRow -1;
+            if (col != xRow) {
+                int cal = xRow - 1;
 //                System.out.println("good: " +col + " != " + cal);
-                for (int row = 0; row < newMatrix.length; row++){
+                for (int row = 0; row < newMatrix.length; row++) {
 //                    System.out.println("row: " + row);
-                    cal = indexRowButton -1;
+                    cal = indexRowButton - 1;
                     if (row != indexRowButton - 1) {
 //                        System.out.println("good: " +row + " != " + cal);
                         //oldMatrix[row][xCol - 1] - коэффициент из прошлой матрицы
@@ -353,7 +357,7 @@ public class SimplexMethodPageController {
 //                        System.out.println("itog: " + newMatrix[row][col - 1]);
                     }
                 }
-                Fractional multi = Fractional.multiplication(oldTarget[xCol - 1],newMatrix[indexRowButton - 1][col - 1]);
+                Fractional multi = Fractional.multiplication(oldTarget[xCol - 1], newMatrix[indexRowButton - 1][col - 1]);
                 Fractional razn = Fractional.subtraction(newTarget[col - 1], multi);
 
                 newTarget[col - 1] = razn;
@@ -369,7 +373,7 @@ public class SimplexMethodPageController {
 
 
         //Для самых правых значений
-        for (int row = 0; row < newMatrix.length; row++){
+        for (int row = 0; row < newMatrix.length; row++) {
             if (row != indexRowButton - 1) {
                 Fractional multi = Fractional.multiplication(oldMatrix[row][xCol - 1], newMatrix[indexRowButton - 1][newMatrix[0].length - 1]);
                 newMatrix[row][newMatrix[0].length - 1] = Fractional.subtraction(newMatrix[row][newMatrix[0].length - 1], multi);
@@ -394,7 +398,7 @@ public class SimplexMethodPageController {
 
     }
 
-    public void stepBack(){
+    public void stepBack() {
         if (allData.size() >= 2) {
             int size = allData.size();
             SharedData oldData = allData.get(size - 2);
@@ -402,7 +406,7 @@ public class SimplexMethodPageController {
             allData.remove(size - 2);
             messageLabel.setText("");
             forward.setDisable(false);
-            if (allData.size() == 0){
+            if (allData.size() == 0) {
                 back.setDisable(true);
             }
             setSharedData(oldData);
@@ -410,44 +414,55 @@ public class SimplexMethodPageController {
     }
 
 
-    public Boolean edgeToInfinity(){
+    public Boolean edgeToInfinity() {
         Fractional[][] matrixOfCoef = sharedData.getMatrixOfCoef();
         Fractional[] targetCoefs = sharedData.getCoefOfTargetFunction();
         for (int col = 0; col < matrixOfCoef[0].length; col++) {
             int count = 0;
             for (int row = 0; row < matrixOfCoef.length; row++) {
-                if (!matrixOfCoef[row][col].isPositive() || matrixOfCoef[row][col].getNumerator() == 0){
+                if (!matrixOfCoef[row][col].isPositive() || matrixOfCoef[row][col].getNumerator() == 0) {
                     count++;
                 }
             }
-            if (!targetCoefs[col].isPositive()){
+            if (!targetCoefs[col].isPositive()) {
                 count++;
             }
-            if (count == matrixOfCoef.length + 1){
+            if (count == matrixOfCoef.length + 1) {
                 return true;
             }
         }
         return false;
     }
 
-    public Boolean isSolution(){
+    public Boolean isSolution() {
         Fractional[] targetCoefs = sharedData.getCoefOfTargetFunction();
         Fractional last = targetCoefs[targetCoefs.length - 1];
-        for (Fractional coef : targetCoefs){
-            if (coef != last) {
-                if (!coef.isPositive() && coef.getNumerator() != 0) {
-                    return false;
-                }
+        ArrayList<Integer> notBasis = sharedData.getNotBasis();
+
+        for (Integer col : notBasis) {
+            int cal = col - 1;
+            System.out.println("Col: " + cal);
+            if (!targetCoefs[col - 1].isPositive() && targetCoefs[col - 1].getNumerator() != 0) {
+                System.out.println("FALSE: " + targetCoefs[col - 1]);
+                return false;
             }
         }
+
+//        for (Fractional coef : targetCoefs){
+//            if (coef != last) {
+//                if (!coef.isPositive()) {
+//                    return false;
+//                }
+//            }
+//        }
         return true;
     }
 
-    private Integer getIndexOfNum(ArrayList<Integer> massive, Integer targetNum){
+    private Integer getIndexOfNum(ArrayList<Integer> massive, Integer targetNum) {
         int index = -1;
-        for (Integer num : massive){
-            index +=1;
-            if (Objects.equals(num, targetNum)){
+        for (Integer num : massive) {
+            index += 1;
+            if (Objects.equals(num, targetNum)) {
                 return index;
             }
         }

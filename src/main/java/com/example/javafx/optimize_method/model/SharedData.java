@@ -8,6 +8,11 @@ public class SharedData {
     private ArrayList<Integer> notBasis;
     private Fractional[] coefOfTargetFunction;
 
+    private Integer countOfVariables;
+    private Integer countOfLimitations;
+
+    private Boolean simplexTurn;
+    private Fractional[] artificalCoefTargetFuntion;
     public Fractional[][] getMatrixOfCoef() {
         return matrixOfCoef;
     }
@@ -38,5 +43,37 @@ public class SharedData {
 
     public void setNotBasis(ArrayList<Integer> newNotBasis) {
         this.notBasis = newNotBasis;
+    }
+
+    public Integer getCountOfVariables() {
+        return countOfVariables;
+    }
+
+    public void setCountOfVariables(Integer countOfVariables) {
+        this.countOfVariables = countOfVariables;
+    }
+
+    public Integer getCountOfLimitations() {
+        return countOfLimitations;
+    }
+
+    public void setCountOfLimitations(Integer countOfLimitations) {
+        this.countOfLimitations = countOfLimitations;
+    }
+
+    public Fractional[] getArtificalCoefTargetFuntion() {
+        return artificalCoefTargetFuntion;
+    }
+
+    public void setArtificalCoefTargetFuntion(Fractional[] artificalCoefTargetFuntion) {
+        this.artificalCoefTargetFuntion = artificalCoefTargetFuntion;
+    }
+
+    public Boolean getSimplexTurn() {
+        return simplexTurn;
+    }
+
+    public void setSimplexTurn(Boolean simplexTurn) {
+        this.simplexTurn = simplexTurn;
     }
 }

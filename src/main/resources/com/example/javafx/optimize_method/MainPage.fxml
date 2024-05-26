@@ -10,9 +10,9 @@
                 <Tab text="Params" closable="false">
                     <fx:include fx:id="ParamPage" source="ParamsPage.fxml"/>
                 </Tab>
-                <Tab text="Graphic" closable="false">
-                    <fx:include source="GraphicPage.fxml"/>
-                </Tab>
+<!--                <Tab text="Graphic" closable="false">-->
+<!--                    <fx:include source="GraphicPage.fxml"/>-->
+<!--                </Tab>-->
                 <Tab text="Simplex" closable="false">
                     <fx:include fx:id="SimplexPage" source="SimplexMethodPage.fxml"/>
                 </Tab>

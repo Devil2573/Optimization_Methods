@@ -271,16 +271,17 @@ public class Gaus {
         }
         System.out.println("Определитель");
         System.out.println(Determinant);
-        if (Determinant.getNumerator() != 0) {
-            return matrixOfCoef;
-        } else {
-            System.out.println("Решения нет");
-            for (int t = 0; t != matrixRows; t++) {
-                System.out.println(Arrays.toString(matrixDeterminant[t]));
-            }
-            writeMatrixInFile("Решения нет\n Определитель равен " + Determinant, matrixDeterminant);
-            return null;
-        }
+        return matrixOfCoef;
+//        if (Determinant.getNumerator() != 0) {
+//            return matrixOfCoef;
+//        } else {
+//            System.out.println("Решения нет");
+//            for (int t = 0; t != matrixRows; t++) {
+//                System.out.println(Arrays.toString(matrixDeterminant[t]));
+//            }
+//            writeMatrixInFile("Решения нет\n Определитель равен " + Determinant, matrixDeterminant);
+//            return null;
+//        }
     }
 
     static void writeMatrixInFile(String firstRow, Fractional[][] matrix) {
@@ -305,18 +306,20 @@ public class Gaus {
             String[] matrixSize = br.readLine().split(" ");
             System.out.println(Arrays.toString(matrixSize));
 
-            int matrixColumns = Integer.parseInt(matrixSize[1]);
+            int matrixColumns = Integer.parseInt(matrixSize[1]) + 1;
             int matrixRows = Integer.parseInt(matrixSize[0]);
 
             Fractional[][] matrixOfCoef = new Fractional[matrixRows][matrixColumns];
 
-            for (int i = 0; i != matrixRows; i++) {
+            for (int i = 0; i < matrixRows; i++) {
                 String[] vectorOfCoef = br.readLine().split(" ");
-                for (int j = 0; j != matrixColumns; j++) {
+                for (int j = 0; j < matrixColumns; j++) {
                     matrixOfCoef[i][j] = Fractional.createFractional(vectorOfCoef[j]);
                 }
             }
-
+            for (Fractional[] row : matrixOfCoef){
+                System.out.println(Arrays.toString(row));
+            }
             String[] baseXtemp = br.readLine().split(" ");
             String[] targetCoefs = br.readLine().split(" ");
 
