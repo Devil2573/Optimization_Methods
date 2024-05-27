@@ -1,6 +1,7 @@
 package com.example.javafx.optimize_method.utils;
 
 import com.example.javafx.optimize_method.model.Fractional;
+import com.example.javafx.optimize_method.model.SharedData;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -308,7 +309,7 @@ public class Gaus {
 
             int matrixColumns = Integer.parseInt(matrixSize[1]) + 1;
             int matrixRows = Integer.parseInt(matrixSize[0]);
-
+            String[] targetCoefs = br.readLine().split(" ");
             Fractional[][] matrixOfCoef = new Fractional[matrixRows][matrixColumns];
 
             for (int i = 0; i < matrixRows; i++) {
@@ -317,11 +318,11 @@ public class Gaus {
                     matrixOfCoef[i][j] = Fractional.createFractional(vectorOfCoef[j]);
                 }
             }
-            for (Fractional[] row : matrixOfCoef){
+            for (Fractional[] row : matrixOfCoef) {
                 System.out.println(Arrays.toString(row));
             }
             String[] baseXtemp = br.readLine().split(" ");
-            String[] targetCoefs = br.readLine().split(" ");
+
 
             hashMap.put("baseXtemp", baseXtemp);
             hashMap.put("matrixOfCoef", matrixOfCoef);
@@ -334,6 +335,40 @@ public class Gaus {
         } catch (IOException e) {
             System.out.println(e.getMessage());
             return null;
+        }
+    }
+
+    public static void writeFile(String fileName, SharedData sharedData) throws IOException {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
+            int matrixRows = sharedData.getCountOfLimitations();
+            int matrixColumns = sharedData.getCountOfVariables();
+
+            // Записываем размер матрицы
+            bw.write(matrixRows + " " + matrixColumns);
+            bw.newLine();
+
+            // Записываем целевые коэффициенты
+            Fractional[] targetCoefs = sharedData.getCoefOfTargetFunction();
+            for (Fractional coef : targetCoefs) {
+                bw.write(coef.toString() + " ");
+            }
+            bw.newLine();
+
+            // Записываем матрицу коэффициентов
+            Fractional[][] matrixOfCoef = sharedData.getMatrixOfCoef();
+            for (int i = 0; i < matrixRows; i++) {
+                for (int j = 0; j <= matrixColumns; j++) {
+                    bw.write(matrixOfCoef[i][j].toString() + " ");
+                }
+                bw.newLine();
+            }
+
+            // Записываем базисные переменные
+            ArrayList<Integer> basis = sharedData.getBasis();
+            for (Integer basisVar : basis) {
+                bw.write(basisVar.toString() + " ");
+            }
+            bw.newLine();
         }
     }
 }

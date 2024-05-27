@@ -1,6 +1,7 @@
 package com.example.javafx.optimize_method.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 
 
@@ -19,6 +20,11 @@ public class MainPageController {
     @FXML
     private ArtificialSimplexPageController ArtificalSimplexPageController;
 
+    @FXML
+    private Tab SimplexTab;
+    @FXML
+    private Tab ArtificalTab;
+
     public TabPane getTabPane() {
         return tabPane;
     }
@@ -28,7 +34,8 @@ public class MainPageController {
 
 
         ParamPageController.setMainPageController(this);
-
+        SimplexTab.setDisable(true);
+        ArtificalTab.setDisable(true);
     }
 
     public ParamsPageController getParamPageController() {
@@ -41,6 +48,11 @@ public class MainPageController {
 
     public ArtificialSimplexPageController getArtificalSimplexPageController() {
         return ArtificalSimplexPageController;
+    }
+
+    public void enableTabs() {
+        SimplexTab.setDisable(false);
+        ArtificalTab.setDisable(false);
     }
 }
 

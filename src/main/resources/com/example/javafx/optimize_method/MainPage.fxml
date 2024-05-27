@@ -7,17 +7,17 @@
     <center>
         <TabPane fx:id="tabPane">
             <tabs>
-                <Tab text="Params" closable="false">
+                <Tab text="Параметры" closable="false">
                     <fx:include fx:id="ParamPage" source="ParamsPage.fxml"/>
                 </Tab>
-<!--                <Tab text="Graphic" closable="false">-->
-<!--                    <fx:include source="GraphicPage.fxml"/>-->
-<!--                </Tab>-->
-                <Tab text="Simplex" closable="false">
+                <Tab fx:id="SimplexTab" text="Симплекс" closable="false">
                     <fx:include fx:id="SimplexPage" source="SimplexMethodPage.fxml"/>
                 </Tab>
-                <Tab text="Artificial Simplex" closable="false">
+                <Tab fx:id="ArtificalTab" text="Искусственный" closable="false">
                     <fx:include fx:id="ArtificalSimplexPage" source="ArtificialSimplexPage.fxml"/>
+                </Tab>
+                <Tab text="Инфо" closable="false">
+                    <fx:include source="InfoPage.fxml"/>
                 </Tab>
             </tabs>
         </TabPane>

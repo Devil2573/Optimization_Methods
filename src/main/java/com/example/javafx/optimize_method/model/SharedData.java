@@ -13,6 +13,7 @@ public class SharedData {
 
     private Boolean simplexTurn;
     private Fractional[] artificalCoefTargetFuntion;
+
     public Fractional[][] getMatrixOfCoef() {
         return matrixOfCoef;
     }

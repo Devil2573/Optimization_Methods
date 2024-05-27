@@ -1,21 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21"
             fx:controller="com.example.javafx.optimize_method.controller.ArtificialSimplexPageController">
     <children>
-        <VBox layoutX="14.0" layoutY="14.0">
+        <VBox layoutX="14.0" layoutY="14.0" alignment="CENTER" spacing="20">
             <GridPane fx:id="simplexGridPane"/>
-            <Label fx:id="messageLabel" text="Information will be displayed here"/>
+            <Label fx:id="messageLabel" style="-fx-font-size: 16px;"/>
             <HBox alignment="CENTER" spacing="10">
-                <Button fx:id="back" text="Назад" onAction="#stepBack"/>
-                <Button fx:id="forward" text="Дальше" onAction="#stepForward"/>
+                <Button fx:id="back" text="Назад" onAction="#stepBack"
+                        style="-fx-font-size: 14px; -fx-pref-width: 100px;"/>
+                <Button fx:id="forward" text="Дальше" onAction="#stepForward"
+                        style="-fx-font-size: 14px; -fx-pref-width: 100px;"/>
+                <CheckBox fx:id="checkBox" text="Auto" onAction="#handleCheckBox" style="-fx-font-size: 14px;"/>
             </HBox>
         </VBox>
     </children>
