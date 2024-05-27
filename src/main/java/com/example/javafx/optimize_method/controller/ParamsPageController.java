@@ -99,6 +99,13 @@ public class ParamsPageController {
             fieldVariables.setText(String.valueOf(newCount));
             updatePanes();
             updateCheckBoxes();
+            int limit = Integer.parseInt(fieldLimitations.getText());
+            if (newCount <= limit){
+                String value = String.valueOf(newCount - 1);
+                fieldLimitations.setText(value);
+                updatePanes();
+                updateCheckBoxes();
+            }
         }
     }
 

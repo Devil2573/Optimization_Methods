@@ -1,6 +1,10 @@
 package com.example.javafx.optimize_method.model;
 
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 public class Fractional {
     private static Boolean decimalFractionals;
     private long denominator;
@@ -192,12 +196,11 @@ public class Fractional {
     public String toString() {
         this.simplify();
         if (decimalFractionals) {
-//            double decimalValue = (double) numerator / denominator;
-//            MathContext context = new MathContext(5, RoundingMode.HALF_UP);
-//            BigDecimal bd = new BigDecimal(decimalValue).setScale(3, RoundingMode.HALF_UP);
-//            return bd.toPlainString();
             double decimalValue = (double) numerator / denominator;
-            return String.valueOf(decimalValue);
+            BigDecimal bd = new BigDecimal(decimalValue).setScale(3, RoundingMode.HALF_UP);
+            return bd.toPlainString();
+//            double decimalValue = (double) numerator / denominator;
+//            return String.valueOf(decimalValue);
         } else if (denominator != 0 && numerator % denominator == 0) {
             return String.valueOf(numerator / denominator);
         } else {
