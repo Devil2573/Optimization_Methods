@@ -15,10 +15,7 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class ParamsPageController {
 
@@ -33,9 +30,9 @@ public class ParamsPageController {
     private VBox targetFunction;
     @FXML
     private HBox checkboxContainer;
-    @FXML
-    private CheckBox checkBox;
-    private Boolean decimalFractionals;
+//    @FXML
+//    private CheckBox checkBox;
+//    private Boolean decimalFractionals;
     private SharedData sharedData = new SharedData();
     private ComboBox<String> comboBoxAspiration;
 
@@ -43,15 +40,15 @@ public class ParamsPageController {
         this.mainPageController = mainPageControllerNew;
     }
 
-    @FXML
-    private void handleCheckBox() {
-        decimalFractionals = checkBox.isSelected();
-        Fractional.setDecimalFractionals(decimalFractionals);
-    }
+//    @FXML
+//    private void handleCheckBox() {
+//        decimalFractionals = checkBox.isSelected();
+//        Fractional.setDecimalFractionals(decimalFractionals);
+//    }
 
     @FXML
     private void initialize() {
-        Fractional.setDecimalFractionals(false);
+//        Fractional.setDecimalFractionals(false);
         fieldVariables.setTextFormatter(new TextFormatter<>(change ->
                 (change.getControlNewText().matches("\\d+")) ? change : null));
         fieldLimitations.setTextFormatter(new TextFormatter<>(change ->
@@ -200,14 +197,18 @@ public class ParamsPageController {
                 throw new RuntimeException("Количество выбранных галочек не совпадает с количеством ограничений.");
             }
 
+            System.out.println("TARGET");
+            System.out.println(Arrays.toString(coefOfTargetFunction));
             if (Objects.equals(selectedItem, "max")) {
                 int count = 0;
-                for (Fractional coef : coefOfTargetFunction) {
-                    coefOfTargetFunction[0] = Fractional.multiplication(coef, Fractional.createFractional("-1"));
+                for (int rowt = 0; rowt< coefOfTargetFunction.length; rowt++) {
+                    coefOfTargetFunction[rowt] = Fractional.multiplication(coefOfTargetFunction[rowt], new Fractional(-1, 1));
                     count++;
                 }
-
+                sharedData.setMin(false);
             }
+            System.out.println(Arrays.toString(coefOfTargetFunction));
+            System.out.println("TARGET");
             ArrayList<Integer> basis = listCheckedCheckboxes();
             ArrayList<Integer> notBasis = listNotCheckedCheckboxes();
 

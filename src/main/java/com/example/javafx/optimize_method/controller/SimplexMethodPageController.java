@@ -16,7 +16,7 @@ import java.util.Objects;
 
 public class SimplexMethodPageController {
 
-
+    private Boolean min;
     private SharedData sharedData;
     private Boolean auto;
     private ArrayList<SharedData> allData = new ArrayList<>();
@@ -49,7 +49,7 @@ public class SimplexMethodPageController {
         ArrayList<Integer> basis = sharedData.getBasis();
         ArrayList<Integer> notBasis = sharedData.getNotBasis();
         SharedData newData = new SharedData();
-
+        min = sharedData.getMin();
         allData.clear();
         messageLabel.setText("");
         back.setDisable(true);
@@ -236,8 +236,15 @@ public class SimplexMethodPageController {
         }
         solution.append(")");
         solution.append("\n");
-        Fractional itog = Fractional.multiplication(targetCoefs[targetCoefs.length - 1], new Fractional(-1, 1));
-        solution.append("f = ").append(itog);
+
+        if (min) {
+            Fractional itog = Fractional.multiplication(targetCoefs[targetCoefs.length - 1], new Fractional(-1, 1));
+            solution.append("f = ").append(itog);
+        }else {
+            Fractional itog = targetCoefs[targetCoefs.length - 1];
+            solution.append("f = ").append(itog);
+        }
+
         return solution;
     }
 

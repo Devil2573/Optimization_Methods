@@ -23,7 +23,7 @@ public class ArtificialSimplexPageController {
     private GridPane simplexGridPane;
 
     private Button highlightedButton = null;
-
+    private Boolean min;
     @FXML
     private Label messageLabel;
 
@@ -45,6 +45,15 @@ public class ArtificialSimplexPageController {
         Fractional[][] matrixOfCoef = sharedData.getMatrixOfCoef();
         int countOfVariables = sharedData.getCountOfVariables();
         int countOfLimitations = sharedData.getCountOfLimitations();
+
+        for (int row = 0; row < countOfLimitations; row++){
+            if (!matrixOfCoef[row][matrixOfCoef[0].length - 1].isPositive() && matrixOfCoef[row][matrixOfCoef[0].length - 1].getNumerator() != 0){
+                for (int col = 0; col <= matrixOfCoef[0].length - 1; col++){
+                    matrixOfCoef[row][col] = Fractional.multiplication(matrixOfCoef[row][col], new Fractional(-1 , 1));
+                }
+            }
+        }
+
         Fractional[][] artificalMatrixOfCoef = new Fractional[countOfLimitations][countOfVariables + countOfLimitations + 1];
         //Создаем новую матрицу искусственного базиса
         for (int row = 0; row < countOfLimitations; row++) {
@@ -100,6 +109,7 @@ public class ArtificialSimplexPageController {
         simplexTurn = false;
         auto = false;
         checkBox.setSelected(false);
+        min = sharedData.getMin();
         setSharedData(newData);
 
     }
@@ -183,7 +193,7 @@ public class ArtificialSimplexPageController {
             forward.setText("Дальше");
             forward.setStyle("-fx-font-size: 14px; -fx-pref-width: 150px;");
         }
-        if (newEdgeToInfinity()) {
+        if (newEdgeToInfinity() && simplexTurn) {
             for (Node node : simplexGridPane.getChildren()) {
                 if (node instanceof Button) {
                     ((Button) node).setDisable(true);
@@ -192,6 +202,7 @@ public class ArtificialSimplexPageController {
             forward.setDisable(true);
             back.setDisable(false);
             messageLabel.setText("Нет решения");
+            System.out.println(simplexTurn);
         } else if (isSolution() && simplexTurn) {
             StringBuilder solution = createAnswer();
             forward.setDisable(true);
@@ -231,8 +242,13 @@ public class ArtificialSimplexPageController {
         }
         solution.append(")");
         solution.append("\n");
-        Fractional itog = Fractional.multiplication(targetCoefs[targetCoefs.length - 1], new Fractional(-1, 1));
-        solution.append("f = ").append(itog);
+        if (min) {
+            Fractional itog = Fractional.multiplication(targetCoefs[targetCoefs.length - 1], new Fractional(-1, 1));
+            solution.append("f = ").append(itog);
+        }else {
+            Fractional itog = targetCoefs[targetCoefs.length - 1];
+            solution.append("f = ").append(itog);
+        }
         return solution;
     }
 
@@ -283,7 +299,9 @@ public class ArtificialSimplexPageController {
         boolean flag = swapToSimplex(sharedData.getArtificalCoefTargetFuntion(), sharedData.getNotBasis());
         boolean flagBasis = false;
 
-
+        if (simplexTurn){
+            flag = false;
+        }
         if (flag) {
             for (int index = sharedData.getCountOfVariables() + 1; index < sharedData.getCountOfVariables() + sharedData.getCountOfLimitations(); index++) {
                 int indexOfNum2 = newData.getBasis().indexOf(index);

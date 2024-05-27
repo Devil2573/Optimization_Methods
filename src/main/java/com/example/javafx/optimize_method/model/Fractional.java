@@ -1,12 +1,7 @@
 package com.example.javafx.optimize_method.model;
 
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-
 public class Fractional {
-    private static Boolean decimalFractionals;
     private long denominator;
     private long numerator;
 
@@ -17,14 +12,6 @@ public class Fractional {
 
     public Fractional() {
 
-    }
-
-    public static Boolean getDecimalFractionals() {
-        return decimalFractionals;
-    }
-
-    public static void setDecimalFractionals(Boolean commonFractions) {
-        Fractional.decimalFractionals = commonFractions;
     }
 
     static void commonDenominator(Fractional fractionalFirst, Fractional fractionalSecond) {
@@ -100,7 +87,7 @@ public class Fractional {
 
     static boolean isNumber(String number) {
         try {
-            Double.parseDouble(number);
+            int a = Integer.parseInt(number);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -113,8 +100,8 @@ public class Fractional {
             if (isNumber(String.valueOf(fractionalSplit[0]))
                     && isNumber(String.valueOf(fractionalSplit[1])) && !fractionalSplit[1].equals("0")) {
                 Fractional fractional = new Fractional();
-                fractional.setNumerator(Long.parseLong(fractionalSplit[0]));
-                fractional.setDenominator(Long.parseLong(fractionalSplit[1]));
+                fractional.setNumerator(Integer.parseInt(fractionalSplit[0]));
+                fractional.setDenominator(Integer.parseInt(fractionalSplit[1]));
                 return fractional;
             } else {
                 System.out.printf("%s не является числом\n", number);
@@ -123,10 +110,11 @@ public class Fractional {
         } else {
 
             if (isNumber(number)) {
-                double value = Double.parseDouble(number);
-                long numerator = (long) (value * 1000000);  // Преобразуем десятичное число в целое, умножив его на 10^6
-                long denominator = 1000000;
-                return new Fractional(numerator, denominator);
+                Fractional fractional = new Fractional();
+
+                fractional.setNumerator(Integer.parseInt(number));
+                fractional.setDenominator(1);
+                return fractional;
             } else {
                 System.out.printf("%s не является числом\n", number);
                 return null;
@@ -150,21 +138,6 @@ public class Fractional {
         } else {
             return false;
         }
-    }
-
-    public static Fractional[][] deepCopyMatrix(Fractional[][] original) {
-        if (original == null) {
-            return null;
-        }
-
-        final Fractional[][] result = new Fractional[original.length][];
-        for (int i = 0; i < original.length; i++) {
-            result[i] = new Fractional[original[i].length];
-            for (int j = 0; j < original[i].length; j++) {
-                result[i][j] = new Fractional(original[i][j].getNumerator(), original[i][j].getDenominator());
-            }
-        }
-        return result;
     }
 
     public long getDenominator() {
@@ -195,13 +168,7 @@ public class Fractional {
     @Override
     public String toString() {
         this.simplify();
-        if (decimalFractionals) {
-            double decimalValue = (double) numerator / denominator;
-            BigDecimal bd = new BigDecimal(decimalValue).setScale(3, RoundingMode.HALF_UP);
-            return bd.toPlainString();
-//            double decimalValue = (double) numerator / denominator;
-//            return String.valueOf(decimalValue);
-        } else if (denominator != 0 && numerator % denominator == 0) {
+        if (denominator != 0 && numerator % denominator == 0) {
             return String.valueOf(numerator / denominator);
         } else {
             return numerator + "/" + denominator;
@@ -221,5 +188,21 @@ public class Fractional {
             return true;
         }
         return false;
+    }
+
+
+    public static Fractional[][] deepCopyMatrix(Fractional[][] original) {
+        if (original == null) {
+            return null;
+        }
+
+        final Fractional[][] result = new Fractional[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            result[i] = new Fractional[original[i].length];
+            for (int j = 0; j < original[i].length; j++) {
+                result[i][j] = new Fractional(original[i][j].getNumerator(), original[i][j].getDenominator());
+            }
+        }
+        return result;
     }
 }

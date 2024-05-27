@@ -10,7 +10,7 @@ public class SharedData {
 
     private Integer countOfVariables;
     private Integer countOfLimitations;
-
+    private Boolean min = true;
     private Boolean simplexTurn;
     private Fractional[] artificalCoefTargetFuntion;
 
@@ -76,5 +76,13 @@ public class SharedData {
 
     public void setSimplexTurn(Boolean simplexTurn) {
         this.simplexTurn = simplexTurn;
+    }
+
+    public Boolean getMin() {
+        return min;
+    }
+
+    public void setMin(Boolean min) {
+        this.min = min;
     }
 }

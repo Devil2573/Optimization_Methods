@@ -42,7 +42,7 @@
                         style="-fx-font-size: 14px; -fx-pref-width: 150px;" text="Выбрать файл"/>
                 <Button mnemonicParsing="false" onAction="#writeInFile"
                         style="-fx-font-size: 14px; -fx-pref-width: 150px;" text="Записать в файл"/>
-                <CheckBox fx:id="checkBox" text="Десятичные" style="-fx-font-size: 14px;" onAction="#handleCheckBox"/>
+<!--                <CheckBox fx:id="checkBox" text="Десятичные" style="-fx-font-size: 14px;" onAction="#handleCheckBox"/>-->
             </children>
 
         </VBox>
